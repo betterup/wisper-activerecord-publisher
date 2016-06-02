@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Publish wisper events for activerecord model lifecycle'
   spec.homepage      = 'https://github.com/betterup/wisper-activerecord-publisher'
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = 'exe'
