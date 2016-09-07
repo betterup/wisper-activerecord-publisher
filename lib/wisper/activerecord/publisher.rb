@@ -45,6 +45,9 @@ module Wisper
     end
   end
 end
-ActiveSupport.on_load(:active_record) do
-  include Wisper::ActiveRecord::Publisher
+
+ActiveSupport::Deprecation.silence do 
+  ActiveSupport.on_load(:active_record) do
+    include Wisper::ActiveRecord::Publisher
+  end
 end
