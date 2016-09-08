@@ -1,0 +1,5 @@
+---
+# skip circle ci setting up database since we use in memory
+database:
+  override:
+    - echo "Using in-memory database..."
