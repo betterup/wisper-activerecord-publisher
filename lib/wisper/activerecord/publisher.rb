@@ -13,6 +13,7 @@ module Wisper
       included do
         include Wisper::Publisher
 
+        # NOTE: do not need to silence deprecations on Rails 5+
         ActiveSupport::Deprecation.silence do
           after_commit :broadcast_create, on: :create
           after_commit :broadcast_update, on: :update
