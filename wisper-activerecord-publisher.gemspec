@@ -21,6 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'wisper'
   spec.add_runtime_dependency 'activerecord'
 
-  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
 end
