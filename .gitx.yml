@@ -1,0 +1,4 @@
+---
+# after releasing feature branch, auto-release gem
+after_release:
+  - bundle exec rake release
