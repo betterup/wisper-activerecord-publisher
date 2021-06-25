@@ -1,4 +1,5 @@
 require 'wisper/activerecord/publisher/version'
+require 'wisper/activerecord/publisher/configuration'
 require 'active_record'
 require 'wisper'
 
@@ -15,9 +16,21 @@ module Wisper
 
         # NOTE: do not need to silence deprecations on Rails 5+
         ActiveSupport::Deprecation.silence do
-          after_commit :broadcast_create, on: :create
-          after_commit :broadcast_update, on: :update
-          after_commit :broadcast_destroy, on: :destroy
+          after_commit :broadcast_create, on: :create, if: -> { should_broadcast?(:create) }
+          after_commit :broadcast_update, on: :update, if: -> { should_broadcast?(:update) }
+          after_commit :broadcast_destroy, on: :destroy, if: -> { should_broadcast?(:destroy) }
+        end
+
+        class_attribute :wisper_activerecord_publisher_broadcast_events
+
+        def self.broadcast_on(*events)
+          return self.wisper_activerecord_publisher_broadcast_events = [] if events == [:none]
+
+          events.each do |event|
+            raise ArgumentError, "Unknown broadcast event '#{event}'" unless [:create, :update, :destroy].include?(event)
+          end
+
+          self.wisper_activerecord_publisher_broadcast_events = events
         end
       end
 
@@ -45,9 +58,17 @@ module Wisper
       def broadcast_event_name(lifecycle)
         "#{self.class.model_name.param_key}_#{lifecycle}"
       end
+
+      def should_broadcast?(event)
+        (
+          wisper_activerecord_publisher_broadcast_events ||
+          Wisper::ActiveRecord::Publisher.configuration.default_broadcast_events
+        ).include?(event)
+      end
     end
   end
 end
+
 ActiveSupport.on_load(:active_record) do
   include Wisper::ActiveRecord::Publisher
 end
