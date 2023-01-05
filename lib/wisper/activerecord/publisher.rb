@@ -11,26 +11,30 @@ module Wisper
     module Publisher
       extend ActiveSupport::Concern
 
+      VALID_BROADCAST_EVENTS = %i[create update destroy]
+
       included do
         include Wisper::Publisher
 
         # NOTE: do not need to silence deprecations on Rails 5+
         ActiveSupport::Deprecation.silence do
-          after_commit :broadcast_create, on: :create, if: -> { should_broadcast?(:create) }
-          after_commit :broadcast_update, on: :update, if: -> { should_broadcast?(:update) }
-          after_commit :broadcast_destroy, on: :destroy, if: -> { should_broadcast?(:destroy) }
+          VALID_BROADCAST_EVENTS.each do |event_name|
+            after_commit "broadcast_#{event_name}".to_sym, on: event_name, if: -> { should_broadcast?(event_name) }
+          end
         end
 
         class_attribute :wisper_activerecord_publisher_broadcast_events
 
         def self.broadcast_on(*events)
-          return self.wisper_activerecord_publisher_broadcast_events = [] if events == [:none]
-
           events.each do |event|
-            raise ArgumentError, "Unknown broadcast event '#{event}'" unless [:create, :update, :destroy].include?(event)
+            raise ArgumentError, "Unknown broadcast event '#{event}'" unless VALID_BROADCAST_EVENTS.include?(event)
           end
 
           self.wisper_activerecord_publisher_broadcast_events = events
+        end
+
+        def self.disable_all_lifecycle_broadcasts!
+          self.wisper_activerecord_publisher_broadcast_events = []
         end
       end
 

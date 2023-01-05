@@ -69,7 +69,7 @@ describe Wisper::Activerecord::Publisher do
   end
 
   context 'when no broadcasts are specified' do
-    before { User.broadcast_on :none }
+    before { User.disable_all_lifecycle_broadcasts! }
 
     it 'never broadcasts events' do
       user = User.new(name: 'Foo Bar')
