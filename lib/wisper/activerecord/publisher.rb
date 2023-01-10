@@ -11,7 +11,7 @@ module Wisper
     module Publisher
       extend ActiveSupport::Concern
 
-      VALID_BROADCAST_EVENTS = %i[create update destroy]
+      VALID_BROADCAST_EVENTS = %i[create update destroy].freeze
 
       included do
         include Wisper::Publisher

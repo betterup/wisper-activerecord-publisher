@@ -13,7 +13,7 @@ module Wisper
         attr_reader :default_broadcast_events
 
         def initialize
-          @default_broadcast_events = [:create, :update, :destroy]
+          @default_broadcast_events = VALID_BROADCAST_EVENTS
         end
 
         def default_broadcast_events=(events)
