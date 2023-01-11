@@ -26,7 +26,7 @@ This gem *does* support background event processing since the events are
 published after commit and each event includes the necessary payload (ie:
 changes).
 
-## Example
+### Example
 
 ```ruby
 class Foo < ActiveRecord::Base
@@ -46,6 +46,45 @@ class MyListener
   end
 end
 ```
+
+### Limiting events per model
+
+Rather than have a model broadcast all events, you can limit them using the `broadcast_on` method.
+
+```ruby
+class Foo < ActiveRecord::Base
+  broadcast_on :create
+end
+
+class MyListener
+  def foo_created(model)
+    # do something here with the model
+  end
+
+  def foo_updated(model, changes)
+    # Will not be called
+  end
+
+  def foo_destroyed(model_attributes)
+    # Will not be called
+  end
+end
+```
+
+### Changing default event broadcasts
+
+You can turn off or limit broadcasts for all models in your application via an initializer.
+
+```ruby
+# config/initializers/wisper_activerecord_publisher.rb
+
+Wisper::ActiveRecord::Publisher.configure do |config|
+  config.default_broadcast_events = [:create, :update] # Only broadcast create and update events
+end
+```
+
+Additionally, you can disable all broadcasts in a model by calling `disable_all_lifecycle_broadcasts!` on the model
+class.
 
 ## Development
 
