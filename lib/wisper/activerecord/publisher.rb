@@ -16,11 +16,8 @@ module Wisper
       included do
         include Wisper::Publisher
 
-        # NOTE: do not need to silence deprecations on Rails 5+
-        ActiveSupport::Deprecation.silence do
-          VALID_BROADCAST_EVENTS.each do |event_name|
-            after_commit "broadcast_#{event_name}".to_sym, on: event_name, if: -> { should_broadcast?(event_name) }
-          end
+        VALID_BROADCAST_EVENTS.each do |event_name|
+          after_commit "broadcast_#{event_name}".to_sym, on: event_name, if: -> { should_broadcast?(event_name) }
         end
 
         class_attribute :wisper_activerecord_publisher_broadcast_events
