@@ -19,11 +19,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'wisper'
-  spec.add_runtime_dependency 'activerecord'
+  spec.add_runtime_dependency 'activerecord', '>= 5.0'
 
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency "sqlite3"
-
-  spec.add_dependency 'rails', '>= 5.0'
 end
